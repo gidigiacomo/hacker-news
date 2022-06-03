@@ -1,21 +1,14 @@
+* {
+  box-sizing: border-box;
+}
+
 .App {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
+.App-content {
+  padding: 0px 10%;
   background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,15 +17,76 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.Searchbar {
+  height: 30vh;
+  padding: 30px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.postsSection {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Post {
+  width: 100%;
+  border: ridge 2px white;
+  border-radius: 15px;
+  box-shadow: 7px 10px 8px #4e4e4e;
+  margin: 40px 0px;
+  padding: 10px 7%;
+}
+
+/*---------------------------Spinner---------------------------*/
+
+.spinner-container {
+  margin-top: 10vh;
+}
+
+.spinner {
+  width: 14.4px;
+  height: 14.4px;
+  animation: spinner-o824ag 1.2s infinite linear;
+}
+
+.spinner div {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: white;
+  border-radius: 50%;
+  animation: spinner-vse6n7 1.5s infinite ease;
+}
+
+.spinner div:nth-child(1) {
+  --rotation: 90;
+}
+
+.spinner div:nth-child(2) {
+  --rotation: 180;
+}
+
+.spinner div:nth-child(3) {
+  --rotation: 270;
+}
+
+.spinner div:nth-child(4) {
+  --rotation: 360;
+}
+
+@keyframes spinner-vse6n7 {
+  0%, 100% {
+     transform: rotate(calc(var(--rotation) * 1deg)) translateY(0%);
   }
+
+  50% {
+     transform: rotate(calc(var(--rotation) * 1deg)) translateY(250%);
+  }
+}
+
+@keyframes spinner-o824ag {
   to {
-    transform: rotate(360deg);
+     transform: rotate(360deg);
   }
 }
