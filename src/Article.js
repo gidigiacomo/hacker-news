@@ -1,24 +1,42 @@
 import React, {useState, useEffect} from 'react';
 
 function Article () {
-    const [posts, setPosts] = useState([]);
-
+    const [news, setNews] = useState([]);
+    const [url, setUrl] = useState("http://hn.algolia.com/api/v1/search?query=react&tags=story")
+    const searchTerm = document.getElementById("input")
     useEffect(() => {
-        fetch("https://hn.algolia.com/api/v1/search_by_date?query=story")
+        fetch(url)
         .then((res) => res.json())
-        .then((json) => setPosts(json.hits))
+        .then((json) => setNews(json.hits))
         .catch((err) => console.log(err));
     }, []);
-
-    console.log(posts);
+    const fetchData = () => {
+        setUrl(`${url}${searchTerm}&tags=story`)
+        fetch(url)
+          .then((res) => res.json())
+          .then((json) => setNews(json.hits))
+          .catch((err) => console.log(err));
+      };
+      useEffect(() => {
+        fetchData()
+      }, [])    
+    console.log(news);
 
     return (
         <div>
-            {posts?.map((post) => {
+            <div>
+                <form>
+                <input type="text" id="input" />
+                <button onClick={fetchData}>Search</button>
+                </form>
+            </div>
+                        
+            {news?.map((news) => {
                 return (
                     <section>
-                        <div>{post.story_title}</div>
-                        <div>{post.comment_text}</div>
+                        <div>
+                            <li key={news.id}><a href={news.url}>{news.title}</a></li>
+                            </div>
                         <br />
                     </section>
                 );
