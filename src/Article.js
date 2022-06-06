@@ -8,10 +8,12 @@ function Article () {
     const postsSection = document.querySelector('.postsSection');
 
     const handleChange = (e) => {
+        e.preventDefault();
         setSearch(e.target.value);
     }
 
     const handleKeyPress = (e) => {
+        e.preventDefault();
         if(e.key === 'Enter') handleClick();
     }
 
@@ -67,7 +69,6 @@ function Article () {
                     return (
                         <section className='Post'>
                             <h2>{post.story_title}</h2>
-                            <div>{post.comment_text}</div>
                             <br />
                         </section>
                     );
