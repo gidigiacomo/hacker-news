@@ -1,12 +1,12 @@
+import React, {useEffect} from 'react'
 import './App.css';
 import Article from './Article';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-content">
-        <Article />
-      </header>
+        <Article />      
     </div>
   );
 }

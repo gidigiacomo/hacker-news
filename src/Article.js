@@ -1,79 +1,101 @@
 import React, {useState, useEffect} from 'react';
+import { Button } from 'react-bootstrap';
+import ReactPaginate from 'react-paginate';
 
 function Article () {
-    const [posts, setPosts] = useState([]);
-    const [search, setSearch] = useState('');
+    const [currentPage, setCurrentPage] = useState(0)
+    const [news, setNews] = useState([])
+    const [text, setText] = useState("")
+    const [query, setQuery] = useState("React")
+    const [isLoading, setisLoading] = useState(true)
+    const [totalPages, setTotalPages] = useState(0)
+    const searchTerm = document.getElementById("input")
 
-    const isLoading = (posts.length === 0 ? true : false);
-    const postsSection = document.querySelector('.postsSection');
-
-    const handleChange = (e) => {
-        setSearch(e.target.value);
-    }
-
-    const handleKeyPress = (e) => {
-        if(e.key === 'Enter') handleClick();
-    }
-
-    const handleClick = async () => {
-        const searchField = document.querySelector('#searchField');
-        const content = await fetch(`https://hn.algolia.com/api/v1/search_by_date?query=${search}`);
-        const jsonDoc = await content.json();
-        if(jsonDoc.hits.length === 0) {
-            postsSection.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M6.854 7.146a.5.5 0 1 0-.708.708L7.293 9l-1.147 1.146a.5.5 0 0 0 .708.708L8 9.707l1.146 1.147a.5.5 0 0 0 .708-.708L8.707 9l1.147-1.146a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146z"/>
-                    <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
-                </svg>
-                <p>No results found for "${searchField.value}"</p>
-            `;
-        } else {
-            setPosts(jsonDoc.hits);
-        }
-        searchField.value = '';
+    const handlePageChange = event =>{
+        setCurrentPage(event.selected)
+        console.log(event)
     }
 
     useEffect(() => {
-        const loading = setInterval(() => {
-            fetch("https://hn.algolia.com/api/v1/search_by_date?query=story")
-                .then((res) => res.json())
-                .then((json) => setPosts(json.hits))
-                .catch((err) => console.log(err));
-        }, 1200);
-    }, []);
+        setisLoading(true)
+        const fetchNews = () =>{
+        fetch(`http://hn.algolia.com/api/v1/search?query=${query}`,{
+            params: {page: currentPage},
+        })
+        .then((res) => res.json())
+        .then((json) => {setNews(json.hits);
+         setTotalPages(json.nbPages)})
+        .catch((err) => console.log(err));
+        };
+        fetchNews()
+        console.log(news)
+        setisLoading(false)
+    }, [query]);
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if(!text){
+            alert("Input is empty")
+        }else{
+            setQuery(text);
+            setText("");
+            
+        }
+        
+      };
+    
 
     return (
-        <div className="content-container">
-            <div className="Searchbar">
-                <h1>Welcome to HackerNews 2.0</h1>
-                <input type='text' placeholder="Your Topic" onChange={handleChange} onKeyPress={handleKeyPress} id="searchField" />
-                <button onClick={handleClick}>Search</button>
-            </div>
-            <div className="postsSection">
-                {isLoading
-                ? (
-                    <div className="spinner-container">
-                        <div className="spinner">
-                            <div></div>   
-                            <div></div>    
-                            <div></div>    
-                            <div></div>    
+        <div>
+            <h1>Hacker News</h1>
+            <br/>
+            <div>
+                <form onSubmit={handleSubmit}>
+                    <div className='row'>
+                        <div className='col'>
+                            <input type="text" placeholder='Search for news' className='form-control' id="input" value={text} onChange={(e) => setText(e.target.value)} />
+                        </div>
+                        <div className='col'>
+                            <button className='btn btn-dark' onClick={handleSubmit}>Search</button>
                         </div>
                     </div>
-                )
-                : posts.map((post) => {
-                    if(post.story_title === null) return false
-                    return (
-                        <section className='Post'>
-                            <h2>{post.story_title}</h2>
-                            <div>{post.comment_text}</div>
-                            <br />
-                        </section>
-                    );
-                })}
+                </form>
             </div>
-        </div>
+            <br/><br/>
+              {isLoading?<div className='spinner'></div>: <div>{news?.map((news) => {
+                return (
+                    <section>
+                        <div className='container'>
+                            <li key={news.id}>
+                                <a href={news.url}>{news.title}</a>
+                                <div className='d-flex'>
+                                <p>{news.points}points | </p>
+                                <p>By : {news.author} | </p>
+                                <p>{news.num_comments} comments </p>
+                                </div>
+                            </li>
+                        </div>
+                        <br />
+                    </section>
+                );
+            })}</div>}     
+
+            <ReactPaginate
+                nextLabel='>>'
+                previousLabel='<<'
+                breakLabel='...'
+                forcePage={currentPage}
+                pageCount={totalPages}
+                renderOnZeroPageCount={null}
+                onPageChange={handlePageChange}
+                className="pagination"
+                activeClassName='active-page'
+                previousClassName='previous-page'
+                nextClassName='next-page'
+            />
+
+            </div>
     );
 }
 
