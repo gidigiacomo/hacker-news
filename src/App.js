@@ -1,14 +1,13 @@
 import React, {useEffect} from 'react'
 import './App.css';
 import Article from './Article';
-import Search from './Search';
-import ButtonClick from './s1';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
     <div className="App">
       
-        <ButtonClick />
+        <Article />
       
     </div>
   );
