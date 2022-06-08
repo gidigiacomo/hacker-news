@@ -94,7 +94,8 @@ function Article () {
                 previousClassName='previous-page'
                 nextClassName='next-page'
             />
-        </div>
+
+            </div>
     );
 }
 
